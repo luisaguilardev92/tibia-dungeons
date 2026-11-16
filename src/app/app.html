@@ -1,0 +1,57 @@
+<main class="game-shell">
+  <header class="topbar">
+    <a class="wordmark" href="#" aria-label="Tibia Dungeons inicio"><span class="mark">✳</span> TIBIA DUNGEONS</a>
+    <div class="run-meta"><span class="live-dot"></span><span>{{ status }}</span><span class="meta-divider"></span><span>EXPEDICIÓN <b>{{ s.run.toString().padStart(2, '0') }}</b></span></div>
+    <button class="icon-button" type="button" title="Reiniciar expedición" aria-label="Reiniciar expedición" (click)="resetRun()">↺</button>
+  </header>
+
+  <section class="intro-row">
+    <div><p class="eyebrow">LAS CATACUMBAS DE VELARIA</p><h1>Un paso más<br /><em>hacia la oscuridad.</em></h1></div>
+    <p class="intro-copy">Prepara a tu aventurero.<br />La dungeon se encarga del resto.</p>
+  </section>
+
+  <section class="game-grid" aria-label="Expedición">
+    <aside class="panel hero-panel">
+      <div class="panel-heading"><span>01 / AVENTURERO</span><span class="level-tag">NV. {{ s.level.toString().padStart(2, '0') }}</span></div>
+      <div class="stat-block"><div class="stat-label"><span>SALUD</span><span><b>{{ s.hp }}</b> / {{ s.maxHp }}</span></div><div class="meter hp-meter"><i [style.width.%]="s.hp / s.maxHp * 100"></i></div><div class="stat-label mana-label"><span>MANÁ</span><span><b>{{ s.mana }}</b> / {{ s.maxMana }}</span></div><div class="meter mana-meter"><i [style.width.%]="s.mana / s.maxMana * 100"></i></div></div>
+      <div class="stats-row"><div><span class="stat-label">ATAQUE</span><strong>{{ effectiveAttack }}</strong></div><div><span class="stat-label">DEFENSA</span><strong>{{ s.defense }}</strong></div><div><span class="stat-label">CRÍTICO</span><strong>{{ s.crit }}%</strong></div></div>
+      <div class="equipment"><div class="equipment-heading">EQUIPO <span>VACÍO</span></div><div class="equipment-slots" aria-label="Ranuras de equipo vacías">
+        <span class="equipment-slot" title="Cabeza vacía" aria-label="Cabeza vacía"><img src="assets/tibia-local/slot-head.png" alt="" /></span>
+        <span class="equipment-slot" title="Amuleto vacío" aria-label="Amuleto vacío"><img src="assets/tibia-local/slot-necklace.png" alt="" /></span>
+        <span class="equipment-slot" title="Armadura vacía" aria-label="Armadura vacía"><img src="assets/tibia-local/slot-armor.png" alt="" /></span>
+        <span class="equipment-slot" title="Espalda vacía" aria-label="Espalda vacía"><img src="assets/tibia-local/slot-backpack.png" alt="" /></span>
+        <span class="equipment-slot" title="Mano izquierda vacía" aria-label="Mano izquierda vacía"><img src="assets/tibia-local/slot-weapon.png" alt="" /></span>
+        <span class="equipment-slot" title="Piernas vacías" aria-label="Piernas vacías"><img src="assets/tibia-local/slot-legs.png" alt="" /></span>
+        <span class="equipment-slot" title="Mano derecha vacía" aria-label="Mano derecha vacía"><img src="assets/tibia-local/slot-shield.png" alt="" /></span>
+        <span class="equipment-slot" title="Anillo vacío" aria-label="Anillo vacío"><img src="assets/tibia-local/slot-ring.png" alt="" /></span>
+        <span class="equipment-slot" title="Botas vacías" aria-label="Botas vacías"><img src="assets/tibia-local/slot-boots.png" alt="" /></span>
+        <span class="equipment-slot" title="Munición vacía" aria-label="Munición vacía"><img src="assets/tibia-local/slot-ammo.png" alt="" /></span>
+      </div></div>
+    </aside>
+
+    <section class="panel dungeon-panel">
+      <div class="dungeon-header"><div><p class="eyebrow">ENCUENTRO ACTUAL</p><h2>{{ s.floor === 1 ? 'La entrada sellada' : 'Pasaje ' + s.floor.toString().padStart(2, '0') }}</h2></div><div class="floor-chip">PISO <b>{{ s.floor.toString().padStart(2, '0') }}</b></div></div>
+      <div class="scene">
+        <div class="scene-glow"></div><div class="scene-arch arch-back"></div><div class="scene-arch arch-front"></div><div class="scene-stone stone-one"></div><div class="scene-stone stone-two"></div><div class="scene-stone stone-three"></div>
+        <div class="combatant hero-combatant"><div class="combat-shadow"></div><div class="mini-hero"><img src="assets/tibia-local/citizen.png" alt="Citizen" /></div><span class="combatant-label">TÚ</span><span class="damage-float" [class.show]="heroDamage() !== null" (animationend)="clearHeroDamage()">{{ heroDamage() === null ? '' : '-' + heroDamage() }}</span></div>
+        <div class="combatant enemy-combatant" [class.hit]="enemyHit()" [class.defeated]="enemyDefeated()"><div class="combat-shadow"></div><div class="enemy-art"><img src="assets/tibia-local/rat.png" alt="Rat" /></div><span class="combatant-label">{{ s.enemy.short }}</span><span class="damage-float" [class.show]="enemyDamage() !== null" (animationend)="clearEnemyDamage()">{{ enemyDamage() === null ? '' : '-' + enemyDamage() }}</span></div>
+        <div class="combat-banner">{{ combatBanner }}</div>
+      </div>
+      <div class="enemy-info"><div class="enemy-title"><div><span class="enemy-kicker">{{ s.enemy.type }}</span><h3>{{ s.enemy.name }}</h3></div><span class="enemy-level">NV. {{ s.floor }}</span></div><div class="enemy-health"><div class="stat-label"><span>VITALIDAD</span><span><b>{{ s.enemyHp }}</b> / {{ s.enemy.hp }}</span></div><div class="meter enemy-meter"><i [style.width.%]="s.enemyHp / s.enemy.hp * 100"></i></div></div></div>
+      <div class="battle-footer"><div class="battle-state"><span class="battle-icon">◉</span><span>{{ battleMessage }}</span></div><div class="battle-speed"><span>RITMO</span><button type="button" aria-label="Cambiar velocidad" (click)="toggleSpeed()">{{ s.speed }}×</button></div></div>
+    </section>
+
+    <aside class="right-column">
+      <section class="panel loot-panel"><div class="panel-heading"><span>02 / BOLSA</span><span class="bag-capacity">{{ bag().length }} / 24</span></div><div class="bag-grid" aria-label="Botín de la bolsa">@for (item of bag(); track item.id) { <div class="bag-slot" [title]="item.name + ' × ' + item.quantity"><img [src]="item.sprite" [alt]="item.name" /><span class="bag-quantity">{{ item.quantity }}</span><small>{{ item.name }}</small></div> } @empty { <div class="bag-empty"><img src="assets/tibia-local/slot-backpack.png" alt="Mochila vacía" /><span>El botín aparecerá aquí</span></div> }</div><div class="bag-foot"><img src="assets/tibia-local/slot-backpack.png" alt="" /><span>LOOT RECOGIDO DE LOS RATS</span></div></section>
+      <section class="panel log-panel"><div class="panel-heading"><span>03 / CRÓNICA</span><span class="log-live">● EN VIVO</span></div><div class="log-list" aria-live="polite">@for (entry of logs(); track $index) { <div class="log-line" [class.muted]="entry.kind === 'muted'" [class.loot]="entry.kind === 'loot'"><span>{{ entry.time }}</span>{{ entry.message }}</div> }</div></section>
+      <button class="start-button" type="button" [disabled]="startDisabled" (click)="startFloor()"><span>{{ startLabel }}</span><span>{{ s.defeated ? '×' : s.betweenFloors ? '✦' : s.active ? '···' : '↓' }}</span></button>
+    </aside>
+  </section>
+
+  <section class="progress-grid" aria-label="Progreso del personaje">
+    <section class="panel experience-panel"><div class="panel-heading"><span>04 / EXPERIENCIA</span><span>NIVEL {{ s.level }}</span></div><div class="experience-count"><b>{{ s.experience }}</b><span>/ {{ nextLevelExperience }} XP</span></div><div class="meter experience-meter"><i [style.width.%]="experienceProgress"></i></div><small>{{ nextLevelExperience - s.experience }} XP PARA NIVEL {{ s.level + 1 }}</small></section>
+    <section class="panel skills-panel"><div class="panel-heading"><span>05 / SKILLS</span><span>AVANCE DEL SERVIDOR</span></div><div class="skill-grid">@for (skill of skills(); track skill.key) { <div class="skill-entry" [class.training-skill]="skill.training"><div class="skill-title"><span>{{ skill.name }}</span><b>{{ skill.level }}</b></div><div class="meter skill-meter"><i [style.width.%]="skill.progress"></i></div><small>{{ skillProgressLabel(skill) }}</small></div> }</div></section>
+  </section>
+
+  <footer><span>UMBRA<span class="footer-mark">L</span></span><span>LA DUNGEON NO ESPERA A NADIE</span><span>PROTOTIPO ANGULAR</span></footer>
+</main>
