@@ -33,6 +33,7 @@ yarn-error.log
 .sass-cache/
 /connect.lock
 /coverage
+/.env.local
 /server/local-saves.json
 /server/api.log
 /server/api-error.log

@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port=4300 --proxy-config proxy.conf.json",
-    "start:server": "node server/index.mjs",
+    "start": "concurrently --kill-others-on-fail --names API,ANGULAR \"npm:start:server\" \"npm:start:angular\"",
+    "start:angular": "ng serve --port=4300 --proxy-config proxy.conf.json",
+    "start:server": "node --env-file-if-exists=.env.local server/index.mjs",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -26,6 +27,7 @@
     "@angular/build": "^21.2.19",
     "@angular/cli": "^21.2.19",
     "@angular/compiler-cli": "^21.2.0",
+    "concurrently": "^10.0.7",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2"
   }
