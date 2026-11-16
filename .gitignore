@@ -6,9 +6,6 @@
 /out-tsc
 /bazel-out
 
-# Original Tibia client sprites are excluded from the public repository.
-/public/assets/tibia-local/*.png
-
 # Node
 /node_modules
 npm-debug.log
